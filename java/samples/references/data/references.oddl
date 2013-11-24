@@ -1,0 +1,76 @@
+Person $chuck
+{
+    Name { string { "Charles", "Chuckleberry" } }
+
+    Friends
+    {
+        ref { $bob, $frank, $drooley }
+    }
+}
+
+LetUsFindSomeFriends
+{
+    PerhapsTheyAreHere
+    {
+        Person $bob
+        {
+            Name { string { "Bob", "McTagott" } }
+
+            Friends
+            {
+            }
+        }
+
+        Person $jane
+        {
+            Name { string { "Jane" } }
+
+            string %FavoriteFood { "Ice Cream" }
+
+            Friends
+            {
+                ref { $bob, $chuck, $frank }
+            }
+        }
+    }
+
+    Zombie $drooley
+    {
+        Name { string { "Drooley" } }
+
+        string %FavoriteFood { "Blood" }
+
+        Friends
+        {
+            ref { $jane }
+        }
+    }
+
+    OrPerhapsTheyAre
+    {
+        InHere
+        {
+            Person $alice
+            {
+                Name { string { "Alice", "in", "Wonderland" } }
+
+                string %FavoriteFood { "Pie" }
+
+                Friends
+                {
+                    ref { $jane }
+                }
+            }
+
+            Children
+            {
+                Person $frank
+                {
+                    Name { string { "Frank" } }
+
+                    string %FavoriteFood { "Condensed Milk" }
+                }
+            }
+        }
+    }
+}

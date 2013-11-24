@@ -1,0 +1,70 @@
+
+StringsAndComments
+{
+    Unicode { string { "💩",  "\U01F649: Hear no evil monkey is str\u01FDnge", "Yes, a sickle - ☭: \u262D" } }
+
+    /*
+
+    brokenString { string { "You can't have new lines in a string
+    " } }
+
+    */
+
+    /*
+        🙉
+        HEAR-NO-EVIL MONKEY
+        Unicode: U+1F649 (U+D83D U+DE49), UTF-8: F0 9F 99 89
+    */
+}
+
+Coordinates $where
+{
+    int32[3] %xyz
+    {
+        { 1, 2, 3 },
+        { 4, 5, 6 },
+        { 7, 8, 9 },
+        {0,0,0},
+        //{0xFF, 0xDEADBEEF, -100},
+        {0xFF, 0x7EADBEEF, -100}
+    }
+}
+
+Negative_Rubbish $_123
+{
+    unsigned_int8 { 0xFF }
+    //int8 { 0xFF }
+    unsigned_int8 { '\xFF' }
+    //int8 { '\xFF' }
+    unsigned_int8 { 255 }
+    //int8 { 255 }
+    unsigned_int8 { 128 }
+    //int8 { 128 }
+    //unsigned_int8 { -127 }
+    int8 { -127 }
+}
+
+Ints
+{
+    unsigned_int32 { 0xFF, 0xFFFF, 0xFFFFFFFF }
+    int32 { 0x7F, 0x7FFF, 0x7FFFFFFF }
+}
+
+Zeros
+{
+    int8 { 0 }
+    int16 { 0 }
+    int32 { 0 }
+    int64 { 0 }
+    unsigned_int8 { 0 }
+    unsigned_int16 { 0 }
+    unsigned_int32 { 0 }
+    unsigned_int64 { 0 }
+    float { 0 }
+    double { 0 }
+}
+
+SeriouslyLargeNumbers /*$_123*/
+{
+    unsigned_int64 { 0xFF, 0xFFFF, 0xFFFFFFFF, 0xFFFFFFFFFFFFFFFF }
+}
