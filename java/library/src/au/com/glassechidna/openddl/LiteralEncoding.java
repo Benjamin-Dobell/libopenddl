@@ -49,19 +49,20 @@ public class LiteralEncoding
 			case 0x11:
 				stringBuilder.append("'\\v'");
 				break;
-		}
 
-		if (value >= 0x20 && value <= 0x7E)
-		{
-			stringBuilder.append("'");
-			stringBuilder.append((char) value);
-			stringBuilder.append("'");
-		}
-		else
-		{
-			stringBuilder.append("'\\x");
-			HexEncoding.byteHexString(stringBuilder, value);
-			stringBuilder.append("'");
+			default:
+				if (value >= 0x20 && value <= 0x7E)
+				{
+					stringBuilder.append("'");
+					stringBuilder.append((char) value);
+					stringBuilder.append("'");
+				}
+				else
+				{
+					stringBuilder.append("'\\x");
+					HexEncoding.byteHexString(stringBuilder, value);
+					stringBuilder.append("'");
+				}
 		}
 	}
 
