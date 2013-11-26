@@ -1,4 +1,4 @@
-libopenddl is a series open-source libraries, developed by Glass Echidna Pty Ltd, that parse and compose [Terathon's OpenDDL](http://www.openddl.org) data exchange format.
+libopenddl is a series open-source libraries, developed by [Glass Echidna Pty Ltd](http://glassechidna.com.au), that parse and compose [Terathon's OpenDDL](http://www.openddl.org) data exchange format.
 
 Java Library
 =====
