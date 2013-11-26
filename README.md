@@ -2,9 +2,9 @@ libopenddl is a series of open-source libraries, developed by [Glass Echidna Pty
 
 Java Library
 =====
-The Java library is a currently available for use and should be nearly fully featured in terms of both parsing and composing OpenDDL. However, it is yet to undergone any form of thorough testing, so until further notice please treat any releases as beta software.
+The Java library is a currently available for use and should be nearly fully featured in terms of both parsing and composing OpenDDL. However, it is yet to have undergone any form of thorough testing; so until further notice please treat any releases as beta software.
 
-Documentaion is also lacking at this point; however, three basic samples are available that show off the basics.
+Documentation is also lacking at this point; however, three small samples are available that show off the basics.
 
 Objective-C Library
 =====
