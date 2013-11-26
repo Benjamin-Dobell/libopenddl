@@ -9,10 +9,12 @@ import java.math.BigInteger;
 
 public final class UnsignedInt64Structure extends PrimitiveStructure<BigInteger> implements MultipleLiteralEncodings
 {
+	public static final String IDENTIFIER = "unsigned_int64";
+
 	public static final BigInteger MAX = new BigInteger("18446744073709551615");
 
 
-	private int literalEncoding;
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected BigInteger decodeDataElement(final String token) throws OpenDDLException
@@ -29,8 +31,26 @@ public final class UnsignedInt64Structure extends PrimitiveStructure<BigInteger>
 	public UnsignedInt64Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public UnsignedInt64Structure(final String name, final int arrayLength)
+	{
+		super(UnsignedInt64Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public UnsignedInt64Structure(final String name)
+	{
+		super(UnsignedInt64Structure.IDENTIFIER, name);
+	}
+
+	public UnsignedInt64Structure(final int arrayLength)
+	{
+		super(UnsignedInt64Structure.IDENTIFIER, arrayLength);
+	}
+
+	public UnsignedInt64Structure()
+	{
+		super(UnsignedInt64Structure.IDENTIFIER);
 	}
 
 	@Override

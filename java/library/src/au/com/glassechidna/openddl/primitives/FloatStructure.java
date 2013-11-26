@@ -7,7 +7,10 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class FloatStructure extends PrimitiveStructure<Float> implements MultipleLiteralEncodings
 {
-	private int literalEncoding;
+	public static final String IDENTIFIER = "float";
+
+
+	private int literalEncoding = LiteralEncoding.FLOATING_POINT;;
 
 	@Override
 	protected Float decodeDataElement(final String token) throws OpenDDLException
@@ -33,8 +36,26 @@ public final class FloatStructure extends PrimitiveStructure<Float> implements M
 	public FloatStructure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.FLOATING_POINT;
+	public FloatStructure(final String name, final int arrayLength)
+	{
+		super(FloatStructure.IDENTIFIER, name, arrayLength);
+	}
+
+	public FloatStructure(final String name)
+	{
+		super(FloatStructure.IDENTIFIER, name);
+	}
+
+	public FloatStructure(final int arrayLength)
+	{
+		super(FloatStructure.IDENTIFIER, arrayLength);
+	}
+
+	public FloatStructure()
+	{
+		super(FloatStructure.IDENTIFIER);
 	}
 
 	@Override

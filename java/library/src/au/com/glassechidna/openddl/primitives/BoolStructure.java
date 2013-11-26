@@ -7,6 +7,9 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class BoolStructure extends PrimitiveStructure<Boolean>
 {
+	public static final String IDENTIFIER = "bool";
+
+
 	@Override
 	protected Boolean decodeDataElement(final String token) throws OpenDDLException
 	{
@@ -22,5 +25,25 @@ public final class BoolStructure extends PrimitiveStructure<Boolean>
 	public BoolStructure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
+
+	public BoolStructure(final String name, final int arrayLength)
+	{
+		super(BoolStructure.IDENTIFIER, name, arrayLength);
+	}
+
+	public BoolStructure(final String name)
+	{
+		super(BoolStructure.IDENTIFIER, name);
+	}
+
+	public BoolStructure(final int arrayLength)
+	{
+		super(BoolStructure.IDENTIFIER, arrayLength);
+	}
+
+	public BoolStructure()
+	{
+		super(BoolStructure.IDENTIFIER);
 	}
 }

@@ -1,15 +1,12 @@
 package au.com.glassechidna.openddl;
 
 import au.com.glassechidna.openddl.primitives.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.math.BigInteger;
 import java.util.HashMap;
 
 // TODO: Java 1.7 changed substring() from O(1) to O(N), in order to avoid derps leaking memory. As such replace use of String with a custom CharSequence
 //       subclass which offers O(1) substring().
-
-// TODO: API to register a structure builder for an identifier
 
 public class Decoder
 {
@@ -1161,18 +1158,6 @@ public class Decoder
 			}
 		}
 
-		final String structureName = structure.getName();
-
-		if (structureName != null && structureName.charAt(0) == '$')
-		{
-			final Structure duplicateNamedStructure = globals.put(structureName, structure);
-
-			if (duplicateNamedStructure != null)
-			{
-				throw new OpenDDLException("Encountered duplicate global name '" + structureName + "'");
-			}
-		}
-
 		return structure;
 	}
 
@@ -1197,7 +1182,6 @@ public class Decoder
 		try
 		{
 			final RootStructure rootStructure = new RootStructure(this);
-			rootStructure.setGlobals(globals);
 			rootStructure.validate();
 			return rootStructure;
 		}

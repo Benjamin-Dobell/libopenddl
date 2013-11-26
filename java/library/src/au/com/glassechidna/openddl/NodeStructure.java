@@ -55,7 +55,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 			{
 				final Structure structure = structures.get(i);
 
-				if (structure.getIdentifier().equals(identifier))
+				if (structure.getStructureIdentifier().equals(identifier))
 				{
 					return structure;
 				}
@@ -100,7 +100,6 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 	}
 
 
-	private final String name;
 	private final LinkedHashMap<String, String> properties = new LinkedHashMap<String, String>();
 
 	private final ArrayList<Structure> structures = new ArrayList<Structure>();
@@ -116,7 +115,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 
 			if (propertyValue == null)
 			{
-				throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getIdentifier() + "' structure");
+				throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
 			}
 
 			properties.put(token, propertyValue);
@@ -126,7 +125,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 
 		if (token == null)
 		{
-			throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getIdentifier() + "' structure");
+			throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
 		}
 	}
 
@@ -139,9 +138,23 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		while (token != null && !token.equals("}"))
 		{
 			final Structure structure = decoder.parseStructure(this, token);
+			final String name = structure.getStructureName();
+
+			if (name != null)
+			{
+				final Structure duplicateNamedStructure = namedStructures.get(name);
+
+				if (duplicateNamedStructure != null)
+				{
+					throw new OpenDDLException("Encountered duplicate local name '" + name + "'");
+				}
+			}
+
 			structures.add(structure);
 
-			final String structureName = structure.getName();
+			structure.attach(getRootStructure(), this);
+
+			final String structureName = structure.getStructureName();
 
 			if (structureName != null)
 			{
@@ -149,7 +162,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 
 				if (duplicateNamedStructure != null)
 				{
-					throw new OpenDDLException("Encountered duplicate local name '" + structureName + "'");
+					throw new OpenDDLException("Attempted to add add a structure with name '" + structureName + "' when a structure with that name already exists");
 				}
 			}
 
@@ -158,7 +171,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 
 		if (token == null)
 		{
-			throw new OpenDDLException("Encountered unexpected EOF whilst parsing '" + getIdentifier() + "' structure's substructures which started on line " + startLine);
+			throw new OpenDDLException("Encountered unexpected EOF whilst parsing '" + getStructureIdentifier() + "' structure's substructures which started on line " + startLine);
 		}
 	}
 
@@ -170,36 +183,30 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 
 		if (token == null)
 		{
-			throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getIdentifier() + "' structure");
+			throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getStructureIdentifier() + "' structure");
 		}
 
 		if (token.equals("("))
 		{
-			this.name = null;
-
 			decodeProperties(decoder);
 		}
 		else if (!token.equals("{"))
 		{
 			if (Decoder.isName(token, 0))
 			{
-				this.name = token;
+				setStructureName(token);
 			}
 			else
 			{
-				throw new OpenDDLException("Encountered invalid name '" + token + "' whilst parsing a '" + getIdentifier() + "' structure");
+				throw new OpenDDLException("Encountered invalid name '" + token + "' whilst parsing a '" + getStructureIdentifier() + "' structure");
 			}
 
 			token = decoder.nextToken();
 
 			if (token == null)
 			{
-				throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getIdentifier() + "' structure");
+				throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getStructureIdentifier() + "' structure");
 			}
-		}
-		else
-		{
-			this.name = null;
 		}
 
 		if (token.equals("{"))
@@ -208,8 +215,18 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		}
 		else
 		{
-			throw new OpenDDLException("Encountered invalid token '" + token + "' whilst parsing a '" + getIdentifier() + "' structure");
+			throw new OpenDDLException("Encountered invalid token '" + token + "' whilst parsing a '" + getStructureIdentifier() + "' structure");
 		}
+	}
+
+	protected NodeStructure(final String identifier, final String name)
+	{
+		super(identifier, name);
+	}
+
+	protected NodeStructure(final String identifier)
+	{
+		super(identifier);
 	}
 
 	@Override
@@ -247,12 +264,12 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 	@Override
 	void encode(final StringBuilder stringBuilder, final int depth)
 	{
-		stringBuilder.append(getIdentifier());
+		stringBuilder.append(getStructureIdentifier());
 
-		if (name != null)
+		if (getStructureName() != null)
 		{
 			stringBuilder.append(' ');
-			stringBuilder.append(name);
+			stringBuilder.append(getStructureName());
 		}
 
 		if (properties.size() > 0)
@@ -370,7 +387,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 	{
 		for (final Structure structure : structures)
 		{
-			if (structure.getIdentifier().equals(identifier))
+			if (structure.getStructureIdentifier().equals(identifier))
 			{
 				return structure;
 			}
@@ -385,7 +402,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		{
 			final Structure structure = structures.get(i);
 
-			if (structure.getIdentifier().equals(identifier))
+			if (structure.getStructureIdentifier().equals(identifier))
 			{
 				return structure;
 			}
@@ -399,30 +416,86 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		return new StructureIdentifierIterator(identifier);
 	}
 
-	public final void addStructure(final Structure structure)
-	{
-		structures.add(structure);
-	}
-
 	public final void addStructure(final int index, final Structure structure)
 	{
 		structures.add(index, structure);
+
+		try
+		{
+			structure.attach(getRootStructure(), this);
+		}
+		catch (final OpenDDLException e)
+		{
+			throw new IllegalStateException(e);
+		}
+
+		final String structureName = structure.getStructureName();
+
+		if (structureName != null)
+		{
+			final Structure duplicateNamedStructure = namedStructures.put(structureName, structure);
+
+			if (duplicateNamedStructure != null)
+			{
+				throw new IllegalStateException("Attempted to add add a structure with name '" + structureName + "' when a structure with that name already exists");
+			}
+		}
 	}
 
-	public final boolean removeStructure(final Structure structure)
+	public final void addStructure(final Structure structure)
 	{
-		return structures.remove(structure);
+		addStructure(structures.size(), structure);
 	}
 
 	public final Structure removeStructure(final int index)
 	{
-		return structures.remove(index);
+		final Structure structure = structures.remove(index);
+
+		if (structure != null)
+		{
+			namedStructures.remove(structure.getStructureName());
+
+			structure.detach();
+		}
+
+		return structure;
+	}
+
+	public final boolean removeStructure(final Structure structure)
+	{
+		final int index = structures.indexOf(structure);
+
+		if (index > -1)
+		{
+			removeStructure(index);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
-	public final String getName()
+	void attach(final RootStructure rootStructure, final NodeStructure parentStructure) throws OpenDDLException
 	{
-		return name;
+		super.attach(rootStructure, parentStructure);
+
+		for (final Structure structure : structures)
+		{
+			structure.attach(rootStructure, this);
+		}
+	}
+
+	@Override
+	void detach()
+	{
+		for (final Structure structure : structures)
+		{
+			structure.detach();
+		}
+
+		super.detach();
 	}
 
 	@Override

@@ -7,10 +7,12 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class UnsignedInt32Structure extends PrimitiveStructure<Long> implements MultipleLiteralEncodings
 {
+	public static final String IDENTIFIER = "unsigned_int32";
+
 	public static final long MAX = 4294967296L;
 
 
-	private int literalEncoding;
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected Long decodeDataElement(final String token) throws OpenDDLException
@@ -27,8 +29,26 @@ public final class UnsignedInt32Structure extends PrimitiveStructure<Long> imple
 	public UnsignedInt32Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public UnsignedInt32Structure(final String name, final int arrayLength)
+	{
+		super(UnsignedInt32Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public UnsignedInt32Structure(final String name)
+	{
+		super(UnsignedInt32Structure.IDENTIFIER, name);
+	}
+
+	public UnsignedInt32Structure(final int arrayLength)
+	{
+		super(UnsignedInt32Structure.IDENTIFIER, arrayLength);
+	}
+
+	public UnsignedInt32Structure()
+	{
+		super(UnsignedInt32Structure.IDENTIFIER);
 	}
 
 	@Override

@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 //       subclass which offers O(1) substring().
 public final class StringStructure extends PrimitiveStructure<String>
 {
+	public static final String IDENTIFIER = "string";
+
+
 	private static int readEscapeCharacter(final StringBuilder stringBuilder, final String token, final int startIndex) throws OpenDDLException
 	{
 		switch (token.charAt(startIndex))
@@ -185,5 +188,25 @@ public final class StringStructure extends PrimitiveStructure<String>
 	public StringStructure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
+
+	public StringStructure(final String name, final int arrayLength)
+	{
+		super(StringStructure.IDENTIFIER, name, arrayLength);
+	}
+
+	public StringStructure(final String name)
+	{
+		super(StringStructure.IDENTIFIER, name);
+	}
+
+	public StringStructure(final int arrayLength)
+	{
+		super(StringStructure.IDENTIFIER, arrayLength);
+	}
+
+	public StringStructure()
+	{
+		super(StringStructure.IDENTIFIER);
 	}
 }

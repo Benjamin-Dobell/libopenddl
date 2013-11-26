@@ -7,7 +7,10 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class Int64Structure extends PrimitiveStructure<Long> implements MultipleLiteralEncodings
 {
-	private int literalEncoding;
+	public static final String IDENTIFIER = "int64";
+
+
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected Long decodeDataElement(final String token) throws OpenDDLException
@@ -24,8 +27,26 @@ public final class Int64Structure extends PrimitiveStructure<Long> implements Mu
 	public Int64Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public Int64Structure(final String name, final int arrayLength)
+	{
+		super(Int64Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public Int64Structure(final String name)
+	{
+		super(Int64Structure.IDENTIFIER, name);
+	}
+
+	public Int64Structure(final int arrayLength)
+	{
+		super(Int64Structure.IDENTIFIER, arrayLength);
+	}
+
+	public Int64Structure()
+	{
+		super(Int64Structure.IDENTIFIER);
 	}
 
 	@Override

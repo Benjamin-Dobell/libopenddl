@@ -7,7 +7,10 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class Int8Structure extends PrimitiveStructure<Byte> implements MultipleLiteralEncodings
 {
-	private int literalEncoding;
+	public static final String IDENTIFIER = "int8";
+
+
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected Byte decodeDataElement(final String token) throws OpenDDLException
@@ -24,8 +27,26 @@ public final class Int8Structure extends PrimitiveStructure<Byte> implements Mul
 	public Int8Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public Int8Structure(final String name, final int arrayLength)
+	{
+		super(Int8Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public Int8Structure(final String name)
+	{
+		super(Int8Structure.IDENTIFIER, name);
+	}
+
+	public Int8Structure(final int arrayLength)
+	{
+		super(Int8Structure.IDENTIFIER, arrayLength);
+	}
+
+	public Int8Structure()
+	{
+		super(Int8Structure.IDENTIFIER);
 	}
 
 	@Override

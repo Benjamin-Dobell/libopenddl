@@ -7,7 +7,10 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class DoubleStructure extends PrimitiveStructure<Double> implements MultipleLiteralEncodings
 {
-	private int literalEncoding;
+	public static final String IDENTIFIER = "double";
+
+
+	private int literalEncoding = LiteralEncoding.FLOATING_POINT;;
 
 	@Override
 	protected Double decodeDataElement(final String token) throws OpenDDLException
@@ -33,8 +36,26 @@ public final class DoubleStructure extends PrimitiveStructure<Double> implements
 	public DoubleStructure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.FLOATING_POINT;
+	public DoubleStructure(final String name, final int arrayLength)
+	{
+		super(DoubleStructure.IDENTIFIER, name, arrayLength);
+	}
+
+	public DoubleStructure(final String name)
+	{
+		super(DoubleStructure.IDENTIFIER, name);
+	}
+
+	public DoubleStructure(final int arrayLength)
+	{
+		super(DoubleStructure.IDENTIFIER, arrayLength);
+	}
+
+	public DoubleStructure()
+	{
+		super(DoubleStructure.IDENTIFIER);
 	}
 
 	@Override

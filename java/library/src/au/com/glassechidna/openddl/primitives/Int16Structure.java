@@ -7,7 +7,10 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class Int16Structure extends PrimitiveStructure<Short> implements MultipleLiteralEncodings
 {
-	private int literalEncoding;
+	public static final String IDENTIFIER = "int16";
+
+
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected Short decodeDataElement(final String token) throws OpenDDLException
@@ -24,8 +27,26 @@ public final class Int16Structure extends PrimitiveStructure<Short> implements M
 	public Int16Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public Int16Structure(final String name, final int arrayLength)
+	{
+		super(Int16Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public Int16Structure(final String name)
+	{
+		super(Int16Structure.IDENTIFIER, name);
+	}
+
+	public Int16Structure(final int arrayLength)
+	{
+		super(Int16Structure.IDENTIFIER, arrayLength);
+	}
+
+	public Int16Structure()
+	{
+		super(Int16Structure.IDENTIFIER);
 	}
 
 	@Override

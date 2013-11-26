@@ -7,10 +7,12 @@ import au.com.glassechidna.openddl.PrimitiveStructure;
 
 public final class UnsignedInt8Structure extends PrimitiveStructure<Short> implements MultipleLiteralEncodings
 {
+	public static final String IDENTIFIER = "unsigned_int8";
+
 	public static final short MAX = 255;
 
 
-	private int literalEncoding;
+	private int literalEncoding = LiteralEncoding.DECIMAL;
 
 	@Override
 	protected Short decodeDataElement(final String token) throws OpenDDLException
@@ -27,8 +29,26 @@ public final class UnsignedInt8Structure extends PrimitiveStructure<Short> imple
 	public UnsignedInt8Structure(final String identifier, final Decoder decoder) throws OpenDDLException
 	{
 		super(identifier, decoder);
+	}
 
-		literalEncoding = LiteralEncoding.DECIMAL;
+	public UnsignedInt8Structure(final String name, final int arrayLength)
+	{
+		super(UnsignedInt8Structure.IDENTIFIER, name, arrayLength);
+	}
+
+	public UnsignedInt8Structure(final String name)
+	{
+		super(UnsignedInt8Structure.IDENTIFIER, name);
+	}
+
+	public UnsignedInt8Structure(final int arrayLength)
+	{
+		super(UnsignedInt8Structure.IDENTIFIER, arrayLength);
+	}
+
+	public UnsignedInt8Structure()
+	{
+		super(UnsignedInt8Structure.IDENTIFIER);
 	}
 
 	@Override

@@ -10,9 +10,7 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 	public static final int NOT_AN_ARRAY = -1;
 
 
-	private final String name;
 	private final ArrayList<T> dataElements = new ArrayList<T>();
-
 	private final int arrayLength;
 
 	private int arrayCount;
@@ -160,18 +158,14 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 			arrayLength = PrimitiveStructure.NOT_AN_ARRAY;
 		}
 
-		if (token.equals("{"))
-		{
-			name = null;
-		}
-		else
+		if (!token.equals("{"))
 		{
 			if (!Decoder.isName(token, 0))
 			{
 				throw new OpenDDLException("Encountered invalid name '" + token + "' whilst parsing primitive structure");
 			}
 
-			name = token;
+			setStructureName(token);
 
 			token = decoder.nextToken();
 
@@ -200,6 +194,28 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 		}
 	}
 
+	protected PrimitiveStructure(final String identifier, final String name, final int arrayLength)
+	{
+		super(identifier, name);
+
+		this.arrayLength = arrayLength;
+	}
+
+	protected PrimitiveStructure(final String identifier, final String name)
+	{
+		this(identifier, name, PrimitiveStructure.NOT_AN_ARRAY);
+	}
+
+	protected PrimitiveStructure(final String identifier, final int arrayLength)
+	{
+		this(identifier, null, arrayLength);
+	}
+
+	protected PrimitiveStructure(final String identifier)
+	{
+		this(identifier, null, PrimitiveStructure.NOT_AN_ARRAY);
+	}
+
 	@Override
 	protected final void validate(final RootStructure rootStructure) throws OpenDDLException
 	{
@@ -211,7 +227,7 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 	@Override
 	void encode(final StringBuilder stringBuilder, final int depth)
 	{
-		stringBuilder.append(getIdentifier());
+		stringBuilder.append(getStructureIdentifier());
 
 		if (arrayLength != PrimitiveStructure.NOT_AN_ARRAY)
 		{
@@ -220,10 +236,10 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 			stringBuilder.append(']');
 		}
 
-		if (name != null)
+		if (getStructureName() != null)
 		{
 			stringBuilder.append(' ');
-			stringBuilder.append(name);
+			stringBuilder.append(getStructureName());
 		}
 
 		final Iterator<T> dataElementIterator = dataElements.iterator();
@@ -290,12 +306,6 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 			Structure.encodeNewLine(stringBuilder, depth);
 			stringBuilder.append("}");
 		}
-	}
-
-	@Override
-	public final String getName()
-	{
-		return name;
 	}
 
 	public final int getDataElementCount()
@@ -430,6 +440,17 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 		}
 
 		arrayCount += arrays.size();
+	}
+
+	public void set(final T value)
+	{
+		if (arrayLength != PrimitiveStructure.NOT_AN_ARRAY)
+		{
+			throw new UnsupportedOperationException("PrimitiveStructure is an array structure, you cannot add individual data elements");
+		}
+
+		dataElements.clear();
+		dataElements.add(value);
 	}
 
 	// Collection<T>

@@ -7,11 +7,27 @@ import java.util.Iterator;
 
 public final class RootStructure extends NodeStructure
 {
-	private HashMap<String, Structure> globals;
+	private HashMap<String, Structure> globals = new HashMap<String, Structure>();
 
 	RootStructure(final Decoder decoder) throws OpenDDLException
 	{
 		super(null, decoder);
+
+		attach(this, null);
+	}
+
+	public RootStructure()
+	{
+		super(null);
+
+		try
+		{
+			attach(this, null);
+		}
+		catch (final OpenDDLException e)
+		{
+			throw new IllegalStateException(e);
+		}
 	}
 
 	@Override
@@ -51,9 +67,21 @@ public final class RootStructure extends NodeStructure
 		}
 	}
 
-	void setGlobals(final HashMap<String, Structure> globals) throws OpenDDLException
+	void addGlobal(final Structure structure) throws OpenDDLException
 	{
-		this.globals = globals;
+		final String structureName = structure.getStructureName();
+
+		if (globals.containsKey(structureName))
+		{
+			throw new OpenDDLException("Encountered duplicate global name '" + structureName + "'");
+		}
+
+		globals.put(structure.getStructureName(), structure);
+	}
+
+	void removeGlobal(final Structure structure)
+	{
+		globals.remove(structure.getStructureName());
 	}
 
 	@Override

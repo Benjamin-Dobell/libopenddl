@@ -1,5 +1,7 @@
 package au.com.glassechidna.openddl;
 
+import au.com.glassechidna.openddl.primitives.*;
+
 public final class PrimitiveType
 {
 	public static final int BOOL = 0; // A boolean type that can have the value true or false.
@@ -18,19 +20,19 @@ public final class PrimitiveType
 	public static final int TYPE = 13; // A type whose values are identifiers naming types as listed in IDENTIFIERS
 
 	public static final String[] IDENTIFIERS = {
-		"bool",
-		"int8",
-		"int16",
-		"int32",
-		"int64",
-		"unsigned_int8",
-		"unsigned_int16",
-		"unsigned_int32",
-		"unsigned_int64",
-		"float",
-		"double",
-		"string",
-		"ref",
-		"type"
+		BoolStructure.IDENTIFIER,
+		Int8Structure.IDENTIFIER,
+		Int16Structure.IDENTIFIER,
+		Int32Structure.IDENTIFIER,
+		Int64Structure.IDENTIFIER,
+		UnsignedInt8Structure.IDENTIFIER,
+		UnsignedInt16Structure.IDENTIFIER,
+		UnsignedInt32Structure.IDENTIFIER,
+		UnsignedInt64Structure.IDENTIFIER,
+		FloatStructure.IDENTIFIER,
+		DoubleStructure.IDENTIFIER,
+		StringStructure.IDENTIFIER,
+		ReferenceStructure.IDENTIFIER,
+		TypeStructure.IDENTIFIER
 	};
 }

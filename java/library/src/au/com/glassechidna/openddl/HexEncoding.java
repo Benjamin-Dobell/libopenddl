@@ -181,8 +181,6 @@ public class HexEncoding
 		}
 	}
 
-	// TODO: These are unsigned encodings... account for signed numbers!
-
 	public static void byteHexString(final StringBuilder stringBuilder, final byte value)
 	{
 		final byte upper = (byte) (value >>> 4);

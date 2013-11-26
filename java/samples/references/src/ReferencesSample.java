@@ -36,9 +36,9 @@ public class ReferencesSample
 					friend = (CreatureStructure) creatureStructure.getStructure(friendReference);
 				}
 
-				if (!relations.containsKey(friend.getName()))
+				if (!relations.containsKey(friend.getStructureName()))
 				{
-					relations.put(friend.getName(), friend);
+					relations.put(friend.getStructureName(), friend);
 
 					findRelations(relations, rootStructure, friend);
 				}
