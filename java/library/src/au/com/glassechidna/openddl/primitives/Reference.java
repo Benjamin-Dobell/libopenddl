@@ -24,23 +24,28 @@ public final class Reference
 		}
 		else
 		{
-			final String[] components = reference.split("\\.");
+			final String[] components = reference.split("%");
 
 			if (!Decoder.isName(components[0], 0))
 			{
 				throw new OpenDDLException("Encountered invalid name '" + components[0] + "' in reference");
 			}
 
+			final ArrayList<String> componentsList = new ArrayList<String>(components.length);
+			componentsList.add(components[0]);
+
 			for (int i = 1; i < components.length; i++)
 			{
-				if (!Decoder.isLocalName(components[i], 0))
+				final String localName = "%" + components[i];
+
+				if (!Decoder.isLocalName(localName, 0))
 				{
 					throw new OpenDDLException("Encountered invalid local name '" + components[i] + "' in reference");
 				}
+
+				componentsList.add(localName);
 			}
 
-			final ArrayList<String> componentsList = new ArrayList<String>(components.length);
-			Collections.addAll(componentsList, components);
 			return componentsList;
 		}
 	}
@@ -125,7 +130,7 @@ public final class Reference
 	{
 		this.components = new ArrayList<String>(components);
 
-		reference = StringUtils.join(components, ".");
+		reference = StringUtils.join(components, "%");
 	}
 
 	public Reference(final String reference) throws OpenDDLException

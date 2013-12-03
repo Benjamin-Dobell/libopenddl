@@ -21,16 +21,7 @@ public final class DoubleStructure extends PrimitiveStructure<Double> implements
 	@Override
 	protected void encodeDataElement(final StringBuilder stringBuilder, final Double dataElement)
 	{
-		double value = dataElement.doubleValue();
-
-		if (literalEncoding == LiteralEncoding.FLOATING_POINT && (Double.isInfinite(value) || Double.isNaN(value)))
-		{
-			LiteralEncoding.encodeDouble(stringBuilder, dataElement, LiteralEncoding.HEX);
-		}
-		else
-		{
-			LiteralEncoding.encodeDouble(stringBuilder, dataElement, literalEncoding);
-		}
+		LiteralEncoding.encodeDouble(stringBuilder, dataElement.doubleValue(), literalEncoding);
 	}
 
 	public DoubleStructure(final String identifier, final Decoder decoder) throws OpenDDLException

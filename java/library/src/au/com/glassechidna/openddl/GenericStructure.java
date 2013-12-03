@@ -16,4 +16,9 @@ public class GenericStructure extends NodeStructure
 	{
 		super(identifier, decoder);
 	}
+
+	public GenericStructure(final String identifier)
+	{
+		super(identifier);
+	}
 }

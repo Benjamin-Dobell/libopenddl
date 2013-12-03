@@ -3,6 +3,7 @@ package au.com.glassechidna.openddl.primitives;
 import au.com.glassechidna.openddl.Decoder;
 import au.com.glassechidna.openddl.OpenDDLException;
 import au.com.glassechidna.openddl.PrimitiveStructure;
+import au.com.glassechidna.openddl.RootStructure;
 
 public class ReferenceStructure extends PrimitiveStructure<Reference>
 {
@@ -44,5 +45,29 @@ public class ReferenceStructure extends PrimitiveStructure<Reference>
 	public ReferenceStructure()
 	{
 		super(ReferenceStructure.IDENTIFIER);
+	}
+
+	@Override
+	protected void validate(final RootStructure rootStructure) throws OpenDDLException
+	{
+		super.validate(rootStructure);
+
+		for (final Reference reference : this)
+		{
+			if (reference.isGlobal())
+			{
+				if (rootStructure.getStructure(reference) == null)
+				{
+					throw new OpenDDLException("Unable to resolve global reference " + reference);
+				}
+			}
+			else
+			{
+				if (getParentStructure().getStructure(reference) == null)
+				{
+					throw new OpenDDLException("Unable to resolve local reference " + reference);
+				}
+			}
+		}
 	}
 }

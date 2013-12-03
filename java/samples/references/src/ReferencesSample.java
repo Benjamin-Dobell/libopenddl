@@ -1,6 +1,7 @@
 import au.com.glassechidna.openddl.*;
 import au.com.glassechidna.openddl.primitives.Reference;
 import au.com.glassechidna.openddl.primitives.ReferenceStructure;
+import au.com.glassechidna.openddl.primitives.StringStructure;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -152,6 +153,17 @@ public class ReferencesSample
 			{
 				System.out.println(creatureStructure.getFullName() + buildFriendString(rootStructure, creatureStructure) + ". " + creatureStructure.getFullName() + " does not have a favorite food.");
 			}
+		}
+
+		try
+		{
+			final Reference aliceFoodReference = new Reference("$alice%FavoriteFood");
+			final StringStructure aliceFoodStructure = (StringStructure) rootStructure.getStructure(aliceFoodReference);
+			System.out.println("\nAlice's favorite food is " + aliceFoodStructure.getDataElement(0) + ".");
+		}
+		catch (OpenDDLException e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

@@ -1,0 +1,4 @@
+PropertyTest$propTest (DuplicateProperty = "Ignored value", DuplicateProperty = "Some value")
+{
+	
+}

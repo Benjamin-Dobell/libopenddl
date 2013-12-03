@@ -217,7 +217,7 @@ public abstract class PrimitiveStructure<T> extends Structure implements Collect
 	}
 
 	@Override
-	protected final void validate(final RootStructure rootStructure) throws OpenDDLException
+	protected void validate(final RootStructure rootStructure) throws OpenDDLException
 	{
 	}
 

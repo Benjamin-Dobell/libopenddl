@@ -1,7 +1,8 @@
 package au.com.glassechidna.openddl;
 
-import au.com.glassechidna.openddl.primitives.Reference;
+import au.com.glassechidna.openddl.primitives.*;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public abstract class NodeStructure extends Structure implements Iterable<Structure>
@@ -109,23 +110,57 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 	{
 		String token = decoder.nextToken();
 
-		while (token != null && !token.equals(")"))
-		{
-			final String propertyValue = decoder.nextToken();
-
-			if (propertyValue == null)
-			{
-				throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
-			}
-
-			properties.put(token, propertyValue);
-
-			token = decoder.nextToken();
-		}
-
 		if (token == null)
 		{
 			throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
+		}
+
+		if (!token.equals(")"))
+		{
+			for (;;)
+			{
+				if (!Decoder.isIdentifier(token, 0))
+				{
+					throw new OpenDDLException("Encountered invalid property name '" + token + "'");
+				}
+
+				final String propertyName = token;
+				final String equalsToken = decoder.nextToken();
+
+				if (equalsToken == null)
+				{
+					throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
+				}
+				else if (!equalsToken.equals("="))
+				{
+					throw new OpenDDLException("Encountered unexpected token '" + equalsToken + "' where '=' was expected");
+				}
+
+				final String propertyValue = decoder.nextToken();
+
+				if (propertyValue == null)
+				{
+					throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
+				}
+
+				properties.put(propertyName, propertyValue);
+
+				token = decoder.nextToken();
+
+				if (token == null)
+				{
+					throw new OpenDDLException("Encountered unexpected EOF whilst parsing property list in a '" + getStructureIdentifier() + "' structure");
+				}
+
+				if (token.equals(","))
+				{
+					token = decoder.nextToken();
+				}
+				else if (token.equals(")"))
+				{
+					break;
+				}
+			}
 		}
 	}
 
@@ -186,11 +221,7 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 			throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getStructureIdentifier() + "' structure");
 		}
 
-		if (token.equals("("))
-		{
-			decodeProperties(decoder);
-		}
-		else if (!token.equals("{"))
+		if (!token.equals("{") && !token.equals("("))
 		{
 			if (Decoder.isName(token, 0))
 			{
@@ -200,6 +231,18 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 			{
 				throw new OpenDDLException("Encountered invalid name '" + token + "' whilst parsing a '" + getStructureIdentifier() + "' structure");
 			}
+
+			token = decoder.nextToken();
+
+			if (token == null)
+			{
+				throw new OpenDDLException("Encountered unexpected EOF whilst parsing a '" + getStructureIdentifier() + "' structure");
+			}
+		}
+
+		if (token.equals("("))
+		{
+			decodeProperties(decoder);
 
 			token = decoder.nextToken();
 
@@ -235,6 +278,31 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		for (final Structure structure : structures)
 		{
 			structure.validate(rootStructure);
+		}
+
+		for (final Map.Entry<String, String> property : properties.entrySet())
+		{
+			final String value = property.getValue();
+
+			if (value.charAt(0) == '$' || value.charAt(0) == '%')
+			{
+				final Reference reference = new Reference(value);
+
+				if (reference.isGlobal())
+				{
+					if (rootStructure.getStructure(reference) == null)
+					{
+						throw new OpenDDLException("Unable to resolve global reference " + reference);
+					}
+				}
+				else
+				{
+					if (getParentStructure().getStructure(reference) == null)
+					{
+						throw new OpenDDLException("Unable to resolve local reference " + reference);
+					}
+				}
+			}
 		}
 	}
 
@@ -509,8 +577,185 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 		return properties.entrySet().iterator();
 	}
 
+	public final byte getInt8Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeInt8(properties.get(key));
+	}
+
+	public final short getInt16Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeInt16(properties.get(key));
+	}
+
+	public final int getInt32Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeInt32(properties.get(key));
+	}
+
+	public final long getInt64Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeInt64(properties.get(key));
+	}
+
+	public final short getUnsignedInt8Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeUnsignedInt8(properties.get(key));
+	}
+
+	public final int getUnsignedInt16Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeUnsignedInt16(properties.get(key));
+	}
+
+	public final long getUnsignedInt32Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeUnsignedInt32(properties.get(key));
+	}
+
+	public final BigInteger getUnsignedInt64Property(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeUnsignedInt64(properties.get(key));
+	}
+
+	public final float getFloatProperty(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeFloat(properties.get(key));
+	}
+
+	public final double getDoubleProperty(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeDouble(properties.get(key));
+	}
+
+	public final String getStringProperty(final String key) throws OpenDDLException
+	{
+		return Decoder.decodeString(properties.get(key));
+	}
+
+	public final Reference getReferenceProperty(final String key) throws OpenDDLException
+	{
+		return new Reference(properties.get(key));
+	}
+
+	public final int getTypeProperty(final String key) throws OpenDDLException
+	{
+		return Decoder.parseType(properties.get(key));
+	}
+
 	public Builder getBuilder(final String identifier)
 	{
 		return null;
+	}
+
+	public final void addInt8Property(final String key, final byte value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeByte(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addInt16Property(final String key, final short value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeShort(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addInt32Property(final String key, final int value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeInt(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addInt64Property(final String key, final long value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeLong(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addUnsignedInt8Property(final String key, final short value, final int encoding)
+	{
+		if (value < 0 || value > UnsignedInt8Structure.MAX)
+		{
+			throw new IllegalArgumentException("value must be in the range [0, 255]");
+		}
+
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeShort(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addUnsignedInt16Property(final String key, final int value, final int encoding)
+	{
+		if (value < 0 || value > UnsignedInt16Structure.MAX)
+		{
+			throw new IllegalArgumentException("value must be in the range [0, 65536]");
+		}
+
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeInt(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addUnsignedInt32Property(final String key, final long value, final int encoding)
+	{
+		if (value < 0 || value > UnsignedInt32Structure.MAX)
+		{
+			throw new IllegalArgumentException("value must be in the range [0, 4294967296]");
+		}
+
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeLong(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addUnsignedInt64Property(final String key, final BigInteger value, final int encoding)
+	{
+		if (value.compareTo(BigInteger.ZERO) < 0 || value.compareTo(UnsignedInt64Structure.MAX) > 0)
+		{
+			throw new IllegalArgumentException("value must be in the range [0, 18446744073709551615]");
+		}
+
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeBigInteger(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addFloatProperty(final String key, final float value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeFloat(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addDoubleProperty(final String key, final double value, final int encoding)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeDouble(stringBuilder, value, encoding);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addStringProperty(final String key, final String value)
+	{
+		final StringBuilder stringBuilder = new StringBuilder();
+		LiteralEncoding.encodeString(stringBuilder, value);
+		properties.put(key, stringBuilder.toString());
+	}
+
+	public final void addReferenceProperty(final String key, final Reference value)
+	{
+		properties.put(key, value.toString());
+	}
+
+	public final void addTypeProperty(final String key, final int type)
+	{
+		properties.put(key, PrimitiveType.IDENTIFIERS[type]);
+	}
+
+	public final void removeProperty(final String key)
+	{
+		properties.remove(key);
 	}
 }

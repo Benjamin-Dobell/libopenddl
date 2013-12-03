@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Name: libopenddl
 Specification-Title: libopenddl
-Specification-Version: 0.9.0
+Specification-Version: 0.9.1
 Specification-Vendor: Glass Echidna Pty Ltd
 Implementation-Title: au.com.glassechidna.openddl
-Implementation-Version: 0.9.0
+Implementation-Version: 0.9.1
 Implementation-Vendor: Glass Echidna Pty Ltd

@@ -205,6 +205,13 @@ public class LiteralEncoding
 	{
 		switch (literalEncoding)
 		{
+			case FLOATING_POINT:
+				if (!Float.isInfinite(value) && !Float.isNaN(value))
+				{
+					stringBuilder.append(Float.toString(value));
+					return;
+				}
+
 			case HEX:
 				stringBuilder.append("0x");
 				HexEncoding.intHexString(stringBuilder, Float.floatToIntBits(value));
@@ -213,10 +220,6 @@ public class LiteralEncoding
 			case BINARY:
 				stringBuilder.append("0b");
 				BinaryEncoding.intBinaryString(stringBuilder, Float.floatToIntBits(value));
-				return;
-
-			case FLOATING_POINT:
-				stringBuilder.append(Float.toString(value));
 				return;
 		}
 
@@ -227,6 +230,13 @@ public class LiteralEncoding
 	{
 		switch (literalEncoding)
 		{
+			case FLOATING_POINT:
+				if (!Double.isInfinite(value) && !Double.isNaN(value))
+				{
+					stringBuilder.append(Double.toString(value));
+					return;
+				}
+
 			case HEX:
 				stringBuilder.append("0x");
 				HexEncoding.longHexString(stringBuilder, Double.doubleToLongBits(value));
@@ -236,12 +246,41 @@ public class LiteralEncoding
 				stringBuilder.append("0b");
 				BinaryEncoding.longBinaryString(stringBuilder, Double.doubleToLongBits(value));
 				return;
-
-			case FLOATING_POINT:
-				stringBuilder.append(Double.toString(value));
-				return;
 		}
 
 		throw new IllegalStateException("Literal encoding '" + literalEncoding + "' is not valid for floats");
+	}
+
+	public static void encodeString(final StringBuilder stringBuilder, final String value)
+	{
+		stringBuilder.append('"');
+
+		final int length = value.length();
+		int index = 0;
+		int bufferedIndex = 0;
+
+		for (; index < length; ++index)
+		{
+			final char character = value.charAt(index);
+
+			switch (character)
+			{
+				case '"':
+				case '\\':
+					stringBuilder.append(value, bufferedIndex, index);
+					stringBuilder.append("\\");
+					stringBuilder.append(character);
+
+					bufferedIndex = index + 1;
+					break;
+			}
+		}
+
+		if (bufferedIndex != length)
+		{
+			stringBuilder.append(value, bufferedIndex, length);
+		}
+
+		stringBuilder.append('"');
 	}
 }

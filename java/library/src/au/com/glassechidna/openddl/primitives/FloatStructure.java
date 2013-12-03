@@ -21,16 +21,7 @@ public final class FloatStructure extends PrimitiveStructure<Float> implements M
 	@Override
 	protected void encodeDataElement(final StringBuilder stringBuilder, final Float dataElement)
 	{
-		float value = dataElement.floatValue();
-
-		if (literalEncoding == LiteralEncoding.FLOATING_POINT && (Float.isInfinite(value) || Float.isNaN(value)))
-		{
-			LiteralEncoding.encodeFloat(stringBuilder, dataElement, LiteralEncoding.HEX);
-		}
-		else
-		{
-			LiteralEncoding.encodeFloat(stringBuilder, dataElement, literalEncoding);
-		}
+		LiteralEncoding.encodeFloat(stringBuilder, dataElement.floatValue(), literalEncoding);
 	}
 
 	public FloatStructure(final String identifier, final Decoder decoder) throws OpenDDLException
