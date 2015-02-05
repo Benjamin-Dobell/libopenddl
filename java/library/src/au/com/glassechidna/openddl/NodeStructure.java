@@ -297,7 +297,19 @@ public abstract class NodeStructure extends Structure implements Iterable<Struct
 				}
 				else
 				{
-					if (getParentStructure().getStructure(reference) == null)
+					NodeStructure ancestor = getParentStructure();
+
+					while (ancestor != rootStructure)
+					{
+						if (ancestor.getStructure(reference) != null)
+						{
+							break;
+						}
+
+						ancestor = ancestor.getParentStructure();
+					}
+
+					if (ancestor == rootStructure)
 					{
 						throw new OpenDDLException("Unable to resolve local reference " + reference);
 					}
