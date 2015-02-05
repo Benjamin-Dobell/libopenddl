@@ -8,7 +8,6 @@ import com.sun.deploy.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 
 public final class Reference
@@ -26,21 +25,40 @@ public final class Reference
 		{
 			final String[] components = reference.split("%");
 
-			if (!Decoder.isName(components[0], 0))
+			final String rootName;
+			int componentIndex;
+
+			if (components[0].length() == 0)
 			{
-				throw new OpenDDLException("Encountered invalid name '" + components[0] + "' in reference");
+				if (components.length == 1)
+				{
+					throw new OpenDDLException("Encountered reference (%) without a name");
+				}
+
+				componentIndex = 1;
+				rootName = "%" + components[1];
+			}
+			else
+			{
+				componentIndex = 0;
+				rootName = components[0];
 			}
 
-			final ArrayList<String> componentsList = new ArrayList<String>(components.length);
-			componentsList.add(components[0]);
-
-			for (int i = 1; i < components.length; i++)
+			if (!Decoder.isName(rootName, 0))
 			{
-				final String localName = "%" + components[i];
+				throw new OpenDDLException("Encountered invalid name '" + rootName + "' in reference");
+			}
+
+			final ArrayList<String> componentsList = new ArrayList<String>(components.length - componentIndex);
+			componentsList.add(rootName);
+
+			for (componentIndex++; componentIndex < components.length; componentIndex++)
+			{
+				final String localName = "%" + components[componentIndex];
 
 				if (!Decoder.isLocalName(localName, 0))
 				{
-					throw new OpenDDLException("Encountered invalid local name '" + components[i] + "' in reference");
+					throw new OpenDDLException("Encountered invalid local name '" + components[componentIndex] + "' in reference");
 				}
 
 				componentsList.add(localName);
