@@ -175,7 +175,7 @@ public class LiteralEncoding
 		throw new IllegalStateException("Literal encoding '" + literalEncoding + "' is not valid for 64-bit integers");
 	}
 
-	public static final void encodeBigInteger(final StringBuilder stringBuilder, final BigInteger value, final int literalEncoding)
+	public static void encodeBigInteger(final StringBuilder stringBuilder, final BigInteger value, final int literalEncoding)
 	{
 		switch (literalEncoding)
 		{

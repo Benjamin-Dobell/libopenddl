@@ -1,6 +1,5 @@
 import au.com.glassechidna.openddl.*;
 import au.com.glassechidna.openddl.primitives.StringStructure;
-import com.sun.deploy.util.StringUtils;
 
 public class NameStructure extends NodeStructure
 {

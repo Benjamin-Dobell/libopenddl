@@ -1,10 +1,6 @@
 package au.com.glassechidna.openddl.primitives;
 
-import au.com.glassechidna.openddl.Decoder;
-import au.com.glassechidna.openddl.OpenDDLException;
-import au.com.glassechidna.openddl.RootStructure;
-import au.com.glassechidna.openddl.Structure;
-import com.sun.deploy.util.StringUtils;
+import au.com.glassechidna.openddl.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
